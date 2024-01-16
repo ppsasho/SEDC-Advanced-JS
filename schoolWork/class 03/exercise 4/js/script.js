@@ -35,7 +35,7 @@ function create3Students() {
     let grade4 = prompt('Enter your fourth grade');
     let grade5 = prompt('Enter your fifth grade');
     let grades = [grade1, grade2, grade3, grade4, grade5];
-    let student = createStudents(firstName, lastName, birthYear, academy, grades);
+    let student = new createStudents(firstName, lastName, birthYear, academy, grades);
     students.push(student);
     console.log(student);
   }
