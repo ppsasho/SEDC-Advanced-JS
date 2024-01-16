@@ -1,0 +1,27 @@
+body {
+    background-color: #1c2020;
+}
+@font-face {
+    font-family: jedi;
+    src: url(../font/Starjedi.ttf);
+}
+h1 {
+    font-family: jedi;
+    color: #9c2e1f;
+}
+#title {
+    margin-left: 2%;
+    font-family: jedi;
+    color: #2a338d;
+}
+table {
+    margin-left: 2%;
+    background-color: white;
+    border: 5px outset black;
+}
+td {
+    background-color: #2d3f2a;
+    color: #417d6c;
+    font-weight: 700;
+    padding: 5px;
+}

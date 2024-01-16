@@ -1,0 +1,16 @@
+body {
+    background-color: #3f444d;
+    color: white;
+}
+table {
+    color: black;
+    background-color: rgb(195, 207, 219);
+}
+td {
+    background-color: #b6bac0;
+    border: 1px solid black;
+}
+label {
+    font-size: larger;
+    font-weight: bold;
+}
