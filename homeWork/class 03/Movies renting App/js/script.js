@@ -13,8 +13,8 @@ let movies = [
 ];
 
 function searchMovie() {
-    let counter = 0;
-    if (text.value === '') {
+    let isMovieFound = false
+    if (!text.value) {
         alert('Please enter a movie name first');
     }
     else {
@@ -24,11 +24,11 @@ function searchMovie() {
         
         for(let movie of movies) {
             if (name === movie) {
-                counter++;
+                isMovieFound = true
             }
         }
 
-        if (counter > 0) {
+        if (isMovieFound) {
                 content.innerHTML = '<h1 style="color: green;">The movie can be rented</h1>'
         } else {
                 content.innerHTML = '<h1 style="color: red;">The movie can\'t be rented</h1>'

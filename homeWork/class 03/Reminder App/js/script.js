@@ -11,7 +11,7 @@ table.style.border = '4px ridge black';
 table.style.visibility = 'hidden';
 let reminders = [];
 
-function createReminder(title, priority, color, description) {
+function Reminder(title, priority, color, description) {
     this.title = title.value,
     this.priority = priority.value,
     this.color = color.value,
@@ -20,20 +20,22 @@ function createReminder(title, priority, color, description) {
 
 function addReminder() {
     if (
-        title.value === '' ||
-        priority.value === '' ||
-        color.value === '' ||
-        description.value === ''
+        !title.value ||
+        !priority.value ||
+        !color.value ||
+        !description.value
     ) {
         alert('Please make sure you fill in all the fields!');
-    } else {
-        let reminder = new createReminder(title, priority, color, description);
-        reminders.push(reminder);
-        title.value = '';
-        priority.value = ''
-        color.value = '' 
-        description.value = ''
+        return;
     }
+
+    let reminder = new Reminder(title, priority, color, description);
+    reminders.push(reminder);
+    title.value = '';
+    priority.value = ''
+    color.value = '' 
+    description.value = ''
+
 }
 
 function showReminders() {
