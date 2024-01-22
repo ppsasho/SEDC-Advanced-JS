@@ -1,0 +1,16 @@
+* {
+  background-color: black;
+}
+#logo {
+  height: 300px;
+  width: 600px;
+}
+.btn-picture {
+  height: 150px;
+  width: 150px;
+}
+
+.center {
+  display: grid;
+  align-content: center;
+}
