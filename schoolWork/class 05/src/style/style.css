@@ -1,10 +1,21 @@
 * {
   background-color: black;
 }
+
 #logo {
   height: 300px;
   width: 600px;
 }
+table {
+  background-color: #6e7373;
+  border: 2px solid red;
+}
+td {
+  padding-right: 8px;
+  border: 2px solid red;
+  background-color: #8b9191;
+}
+
 .btn-picture {
   height: 150px;
   width: 150px;
