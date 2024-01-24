@@ -1,18 +1,39 @@
 let personBtn = document.getElementById("person");
 let starShipBtn = document.getElementById("star-ship");
+let content = document.getElementById('content');
+// let people = [];
+// let starships = [];
 
-function getDataFromApi(url, renderFunction) {
+function getDataFromApi(url, key) {
   fetch(url)
-    .then((response) => response.json())
-    .then((result) => {
+  .then((response) => response.json())
+  .then((response) => {
+      switch(key) {
 
-      renderFunction(result);
+        case 'person':
+          renderPerson(createPerson(response));
+          break;
+        
+        case 'starship':
+          renderStarShip(createStarShip(response));
+          break;
+        
+        default:
+          break;
+      }
+    })
+    .catch((error) => {
+      console.log(error);
     });
 }
 
-let renderPerson = (personObject) => {};
+let renderPerson = (object) => {
+  console.log(object);
+};
 
-let renderStarShip = (shipObject) => {};
+let renderStarShip = (object) => {
+  console.log(object);
+};
 
 function Person(object) {
   this.name = object.name,
@@ -20,7 +41,7 @@ function Person(object) {
   this.mass = object.mass,
   this.gender = object.gender,
   this.birthYear = object.birth_year,
-  this.appearances = object.films.length;
+  this.appearances = object.films;
 }
 
 function StarShip(object) {
@@ -34,28 +55,26 @@ function StarShip(object) {
 
 let createStarShip = (object) => {
   let starShip = new StarShip(object);
-  console.log(starShip);
   return starShip;
 };
 
 let createPerson = (object) => {
   let person = new Person(object);
-  console.log(person);
   return person;
 };
 
-let sendPersonRequest = () => {
-  getDataFromApi("https://swapi.dev/api/people/?page=1", createPerson());
-};
+let sendPersonRequest = () => getDataFromApi("https://swapi.dev/api/people/?page=1", 'person');
 
-let sendStarShipRequest = () => {
-  createStarShip(getDataFromApi("https://swapi.dev/api/starships/?page=1", ));
-};
+
+let sendStarShipRequest = () => getDataFromApi("https://swapi.dev/api/starships/?page=1", 'starship');
+
 
 personBtn.addEventListener("click", () => {
   sendPersonRequest();
+  console.log('click works');
 });
 
 starShipBtn.addEventListener("click", () => {
   sendStarShipRequest();
+  console.log('click works');
 });
