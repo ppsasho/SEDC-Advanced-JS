@@ -7,10 +7,14 @@
   width: 600px;
 }
 
+#page {
+  color: white;
+}
+
 #table {
   margin-top: 2%;
   background-color: white;
-  border: 10px outset black;
+  border: 4px solid rgb(139, 135, 135);
   height: fit-content;
 }
 th {
