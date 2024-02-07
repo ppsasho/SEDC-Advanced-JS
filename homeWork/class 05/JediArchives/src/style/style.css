@@ -10,6 +10,25 @@
 #page {
   color: white;
 }
+#header0, #header3,
+#header1, #header4,
+#header2, #header5 {
+  font-weight: bold;
+}
+
+#header0:hover, #header3:hover,
+#header1:hover, #header4:hover,
+#header2:hover, #header5:hover {
+  cursor: pointer;
+  background-color: #3b6334;
+}
+
+#header0:active, #header3:active,
+#header1:active, #header4:active,
+#header2:active, #header5:active {
+  background-color: #3a6358;
+  color: #69a35f;
+}
 
 #table {
   margin-top: 2%;
