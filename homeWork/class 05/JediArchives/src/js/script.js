@@ -12,6 +12,7 @@ spinner.style.visibility = "hidden";
 nextBtn.style.visibility = "hidden";
 prevBtn.style.visibility = "hidden";
 
+let allPeople = []; // for search feature
 let planets = [];
 let people = [];
 let starships = [];
@@ -73,62 +74,31 @@ function getDataFromApi(url, key) {
     });
 }
 
-// let drawTable = array => {
-//   let tableRow = table.insertRow(0);
-//   for (let i = 0; i < attributes.length; i++) {
-//     let attrCell = tableRow.insertCell(i);
-//     attrCell.innerText = attributes[i];
-//     attrCell.id = `header${i}`
-//     attrCell.addEventListener('click', ()=> {
-//       console.log(`${attrCell.id} clicked`);
-//       sortTable(array);
-//     })
-//   }
+// For getting all people instead of 10 people in a array
+(function () {
+  let
+  for(let i = 0; i < 9; i++) {
+    
+  }
+})
 
-//   for (let i = 0; i < array.length; i++) {
-//     let tableRow = table.insertRow(i + 1);
-//     let object = array[i];
-//     let keys = Object.keys(object);
 
-//     for (let b = 0; b < keys.length; b++) {
-//       let key = keys[b];
-//       value = object[key];
-//       let tableCells = tableRow.insertCell(b);
-//       tableCells.innerText += `${value}`;
-//     }
-//   }
-//   if (currentObject.previous) {
-//     prevBtn.style.visibility = "visible";
-//   }
-//   if (currentObject.next) {
-//     nextBtn.style.visibility = "visible";
-//   }
-//   page.style.visibility = "visible";
-// }
-
-let renderPerson = array => {
+let renderPerson = (array) => {
   getPageNumber();
   table.innerHTML = "";
   nextBtn.style.visibility = "hidden";
   prevBtn.style.visibility = "hidden";
 
-  let attributes = [
-    "Name",
-    "Height",
-    "Mass",
-    "Gender",
-    "Birth-Year",
-    "Films",
-  ];
-  
+  let attributes = ["Name", "Height", "Mass", "Gender", "Birth_Year", "Films"];
+
   let tableRow = table.insertRow(0);
   for (let i = 0; i < attributes.length; i++) {
     let attrCell = tableRow.insertCell(i);
     attrCell.innerText = attributes[i];
-    attrCell.id = `header${i}`
-    attrCell.addEventListener('click', () => {
+    attrCell.id = `header${i}`;
+    attrCell.addEventListener("click", () => {
       sortTable(array, attrCell.innerText.toLowerCase());
-    })
+    });
   }
 
   for (let i = 0; i < array.length; i++) {
@@ -138,7 +108,7 @@ let renderPerson = array => {
 
     for (let b = 0; b < keys.length; b++) {
       let key = keys[b];
-      value = object[key];
+      let value = object[key];
       let tableCells = tableRow.insertCell(b);
       tableCells.innerText += `${value}`;
     }
@@ -170,10 +140,10 @@ let renderStarShip = (array) => {
   for (let i = 0; i < attributes.length; i++) {
     let attrCell = tableRow.insertCell(i);
     attrCell.innerText = attributes[i];
-    attrCell.id = `header${i}`
-    attrCell.addEventListener('click', () => {
+    attrCell.id = `header${i}`;
+    attrCell.addEventListener("click", () => {
       sortTable(array, attrCell.innerText.toLowerCase());
-    })
+    });
   }
 
   for (let i = 0; i < array.length; i++) {
@@ -183,7 +153,7 @@ let renderStarShip = (array) => {
 
     for (let b = 0; b < keys.length; b++) {
       let key = keys[b];
-      value = object[key];
+      let value = object[key];
       let tableCells = tableRow.insertCell(b);
       tableCells.innerText += `${value}`;
     }
@@ -216,10 +186,10 @@ let renderPlanet = (array) => {
   for (let i = 0; i < attributes.length; i++) {
     let attrCell = tableRow.insertCell(i);
     attrCell.innerText = attributes[i];
-    attrCell.id = `header${i}`
-    attrCell.addEventListener('click', () => {
+    attrCell.id = `header${i}`;
+    attrCell.addEventListener("click", () => {
       sortTable(array, attrCell.innerText.toLowerCase());
-    })
+    });
   }
 
   for (let i = 0; i < array.length; i++) {
@@ -229,7 +199,7 @@ let renderPlanet = (array) => {
 
     for (let b = 0; b < keys.length; b++) {
       let key = keys[b];
-      value = object[key];
+      let value = object[key];
       let tableCells = tableRow.insertCell(b);
       tableCells.innerText += `${value}`;
     }
@@ -326,21 +296,21 @@ let nextPage = () => {
   let pageNumber = pageInfo[page + 1];
   pageDisplay.innerText = `Page ${--pageNumber}`;
   console.log(`Current page: ${pageNumber}`);
-}
+};
 let previousPage = () => {
   let pageInfo = currentObject.previous;
   let page = pageInfo.indexOf("=");
   let pageNumber = pageInfo[page + 1];
   pageDisplay.innerText = `Page ${++pageNumber}`;
   console.log(`Current page: ${pageNumber}`);
-}
+};
 
 let getPageNumber = () => {
-  if(currentObject.next === null) {
+  if (currentObject.next === null) {
     previousPage();
     return;
   }
-  if(currentObject.previous === null) {
+  if (currentObject.previous === null) {
     nextPage();
     return;
   }
@@ -354,40 +324,40 @@ let sortTable = (input, attr) => {
   console.log(`Sorted array:`);
   console.log(array);
 
-  if(sortSwitch) {
+  if (sortSwitch) {
     array.sort((attr1, attr2) => attr2.name.length - attr1.name.length);
-    switch(currentRender) {
-      case 'person' :
-      renderPerson(array);
+    switch (currentRender) {
+      case "person":
+        renderPerson(array);
         break;
-      
-      case 'starship' :
-      renderStarShip(array);
+
+      case "starship":
+        renderStarShip(array);
         break;
-  
-      case 'planets' :
-      renderPlanet(array);
+
+      case "planets":
+        renderPlanet(array);
         break;
     }
-    sortSwitch = false
+    sortSwitch = false;
     return;
   }
   array.sort((attr1, attr2) => attr1.name.length - attr2.name.length);
-  switch(currentRender) {
-    case 'person' :
-    renderPerson(array);
-      break;
-    
-    case 'starship' :
-    renderStarShip(array);
+  switch (currentRender) {
+    case "person":
+      renderPerson(array);
       break;
 
-    case 'planets' :
-    renderPlanet(array);
+    case "starship":
+      renderStarShip(array);
+      break;
+
+    case "planets":
+      renderPlanet(array);
       break;
   }
   sortSwitch = true;
-}
+};
 
 personBtn.addEventListener("click", sendPersonRequest);
 
