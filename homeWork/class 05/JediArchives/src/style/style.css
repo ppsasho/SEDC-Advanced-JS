@@ -7,6 +7,15 @@
   width: 600px;
 }
 
+.search {
+  color: white;
+  border-radius: 8px;
+}
+.search-btn:active {
+  color: black;
+  background-color: whitew;
+}
+
 #page {
   color: white;
 }

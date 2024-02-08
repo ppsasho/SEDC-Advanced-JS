@@ -6,13 +6,18 @@ let prevBtn = document.getElementById("previous");
 let table = document.getElementsByTagName("table")[0];
 let spinner = document.getElementById("spinner");
 let pageDisplay = document.getElementById("page");
+let search = document.getElementById('search-bar');
+let searchBtn = document.getElementById('searchBtn');
+let searchField = document.getElementById('searchField');
 
+searchField.value = '';
+search.style.visibility = 'hidden';
 pageDisplay.style.visibility = "hidden";
 spinner.style.visibility = "hidden";
 nextBtn.style.visibility = "hidden";
 prevBtn.style.visibility = "hidden";
 
-let allPeople = []; // for search feature
+let allPeople = []; 
 let planets = [];
 let people = [];
 let starships = [];
@@ -70,18 +75,20 @@ function getDataFromApi(url, key) {
       }
     })
     .catch((error) => {
-      console.log(error);
+      console.log('Request limit was probably hit ]:', error);
     });
 }
 
-// For getting all people instead of 10 people in a array
-(function () {
-  let
-  for(let i = 0; i < 9; i++) {
-    
+(async function() {
+  for(let i = 1; i < 10; i++) {
+    console.log(`Fetch page #${i}`);
+    await fetch(`https://swapi.dev/api/people/?page=${i}`)
+    .then((response) => response.json())
+    .then((data) => allPeople.push(data.results))
   }
-})
-
+  allPeople = allPeople.flat();
+  console.log(allPeople);
+})();
 
 let renderPerson = (array) => {
   getPageNumber();
@@ -120,6 +127,7 @@ let renderPerson = (array) => {
     nextBtn.style.visibility = "visible";
   }
   page.style.visibility = "visible";
+  search.style.visibility = 'visible';
 };
 
 let renderStarShip = (array) => {
@@ -165,6 +173,7 @@ let renderStarShip = (array) => {
     nextBtn.style.visibility = "visible";
   }
   page.style.visibility = "visible";
+  search.style.visibility = 'hidden';
 };
 
 let renderPlanet = (array) => {
@@ -211,7 +220,10 @@ let renderPlanet = (array) => {
     nextBtn.style.visibility = "visible";
   }
   page.style.visibility = "visible";
+  search.style.visibility = 'hidden';
 };
+
+
 
 function Person(object) {
   (this.name = object.name),
@@ -240,6 +252,7 @@ function Planet(object) {
     (this.terrain = object.terrain);
 }
 
+
 let createStarShip = (object) => {
   starships = [];
   for (let i = 0; i < object.results.length; i++) {
@@ -266,6 +279,7 @@ let createPlanet = (object) => {
   }
   return planets;
 };
+
 
 let sendPersonRequest = () =>
   getDataFromApi("https://swapi.dev/api/people/?page=1", "person");
@@ -317,6 +331,7 @@ let getPageNumber = () => {
   nextPage();
 };
 
+
 let sortTable = (input, attr) => {
   let array = [...input];
   console.clear();
@@ -358,6 +373,32 @@ let sortTable = (input, attr) => {
   }
   sortSwitch = true;
 };
+
+let searchAllPeople = (request, array)=> {
+  if (searchField.value) {
+    let personArray = [];
+    console.log(`The requested name is: ${request}`);
+    let foundPerson = array.filter(person => person.name === `${request}`);
+    console.log('The requested person was found!');
+    console.log(foundPerson);
+    let newPerson = new Person(foundPerson[0]);
+    personArray.push(newPerson);
+    console.log(`Extracted the required info from ${request}`);
+    renderPerson(personArray);
+    return;
+  }
+  alert('Nothing to search!');
+}
+
+let sendSearchRequest = () => {
+  console.clear();
+  console.log('Sending search request...');
+  searchAllPeople(searchField.value, allPeople);
+  searchField.value = '';
+}
+
+
+searchBtn.addEventListener('click', sendSearchRequest)
 
 personBtn.addEventListener("click", sendPersonRequest);
 
