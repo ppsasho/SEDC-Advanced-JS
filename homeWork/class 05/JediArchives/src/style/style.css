@@ -6,7 +6,10 @@
   height: 300px;
   width: 600px;
 }
-
+#spinner {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
 .search {
   color: white;
   border-radius: 8px;
