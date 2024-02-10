@@ -22,8 +22,7 @@ let displayBeer = array => {
     content.innerHTML = '';
     for(let i = 0; i < array.length; i++) {
         let cardBox = document.createElement('div');
-        cardBox.classList.add('card', 'border-dark', 'text-bg-dark', 'h-100'); // 'text-bg-secondary'
-        // cardBox.style.backgroundColor = '#1f1e1e';
+        cardBox.classList.add('card', 'border-dark', 'text-bg-dark', 'h-100', 'text-center');
         content.appendChild(cardBox);
         cardBox.style.width = '18rem';
         cardBox.style.padding = '20px';
@@ -46,6 +45,7 @@ let displayBeer = array => {
         cardBtn.classList.add('btn', 'btn-primary');
         cardBtn.addEventListener('click', () => {
             console.log('Card infoBtn clicked');
+            moreBeerInfo({name, image_url, description, tagline, first_brewed, abv, ibu, food_pairing} = array[i]);
         })
         cardBtn.innerText = 'More details';
         let cardFooter = document.createElement('div');
@@ -69,6 +69,80 @@ function Beer (object) {
     this.abv = object.abv,
     this.ibu = object.ibu,
     this.foodPairing = object.food_pairing
+}
+
+/*<div class="card mb-3" style="max-width: 540px;">
+  <div class="row g-0">
+    <div class="col-md-4">
+      <img src="..." class="img-fluid rounded-start" alt="...">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title">Card title</h5>
+        <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+        <p class="card-text"><small class="text-body-secondary">Last updated 3 mins ago</small></p>
+      </div>
+    </div>
+  </div>
+</div> */
+
+let moreBeerInfo = (name, img, desc, tag, brewed, abv, ibu, food) => {
+    content.innerHTML = '';
+    // console.log(name, img, desc, tag, brewed, abv, ibu, food);
+    let cardBox = document.createElement('div');
+    cardBox.classList.add('card', 'mb-3');
+    cardBox.style.maxWidth = '20rem';
+
+    let cardRow = document.createElement('div');
+    cardRow.classList.add('row', 'g-0');
+
+    let imgFrame = document.createElement('div');
+    imgFrame.classList.add('col-md-4');
+
+    let imgShow = document.createElement('img');
+    imgShow.src = img;
+    imgShow.classList.add('img-fluid', 'rounded-start');
+    imgFrame.appendChild(imgShow);
+    imgFrame.appendChild(cardRow);
+
+    let cardBodyFrame = document.createElement('div'); // Inside cardRow
+    cardBodyFrame.classList.add('col-md-8');
+
+    let cardBody = document.createElement('div'); // Inside cardBodyFrame
+    cardBody.classList.add('card-body');
+
+    let cardHeader = document.createElement('div'); // Inside cardBody
+    cardHeader.style.display ='inline';
+    cardHeader.classList.add('card-header', 'card-title');
+    cardHeader.innerText = name;
+
+    let cardTag = document.createElement('span'); // Inside cardBody
+    cardTag.innerText = tag;
+
+    cardHeader.appendChild(cardTag);
+
+    let cardText = document.createElement('p'); // Inside cardBody
+    cardText.innerText = desc;
+
+    let cardBrewed = document.createElement('p'); // Inside cardBody
+    cardBrewed.innerText = `Brewed: ${brewed}`;
+
+    let cardAbv = document.createElement('p'); // Inside cardBody
+    cardAbv.innerText = `alcohol: ${abv}`;
+
+    let cardIbu = document.createElement('p'); // Inside cardBody
+    cardIbu.innerText = `Bitterness: ${ibu}`;
+
+    let cardList = document.createElement('ul'); // Inside cardBody
+    cardList.classList.add('list-group', 'list-group-flush');
+
+
+    for(let i = 0; i < food.length; i++) {
+        let pair = document.createElement('li');
+        pair.classList.add('list-group-item');
+        cardList.appendChild(pair);
+    }
+
 }
 
 let createBeer = array => {
