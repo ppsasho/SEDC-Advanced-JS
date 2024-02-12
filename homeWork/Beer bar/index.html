@@ -13,8 +13,8 @@
         <a class="link-warning link-underline link-underline-opacity-0" id="beers">Beers</a>
         <a class="link-secondary link-underline link-underline-opacity-0" id="random-beer">Random beer</a>
         <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Beer name" aria-label="Search">
-        <button class="btn btn-outline-success" type="submit">Search</button>
+        <input id="nameSearchField" class="form-control me-2" type="search" placeholder="Beer name" aria-label="Search">
+        <button id="nameSearchBtn" class="btn btn-outline-success" type="submit">Search</button>
       </form>
     </nav>
 
@@ -22,6 +22,7 @@
         <div id="spinner" class="spinner-border" role="status">
         </div>
       </div>
+      <div id="pageDisplay"></div>
       <div id="top" class="filterNav">
         <div class="btn-group dropdown">
             <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -31,6 +32,7 @@
               <li><a id="filter5" class="dropdown-item" href="#">show 5</a></li>
               <li><a id="filter10" class="dropdown-item" href="#">show 10</a></li>
               <li><a id="filter20" class="dropdown-item" href="#">show 20</a></li>
+              <li><a id="filter25" class="dropdown-item" href="#">show 25</a></li>
             </ul>
           </div>
           <button class="btn btn-info"><a href="#pageNav" class="link-underline link-underline-opacity-0 link-light">Bottom</a></button>
