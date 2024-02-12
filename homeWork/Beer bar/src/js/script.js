@@ -14,15 +14,14 @@ let sortIbu= document.getElementById('filterIbu');
 let sort5 = document.getElementById('filter5');
 let sort10 = document.getElementById('filter10');
 let sort20 = document.getElementById('filter20');
-let sort25 = document.getElementById('filter25');
 let filterNav = document.getElementsByClassName('filterNav')[0];
 
-
+content.style.visibility = 'hidden';
 filterNav.style.visibility = 'hidden';
 pageNav.style.visibility = 'hidden';
 spinner.style.visibility = 'hidden';
 let pageNum = null;
-let perPage = 25;
+let perPage = 20;
 let filter = null;
 let currentBeers = null;
 let sortSwitch = false;
@@ -44,6 +43,7 @@ let getBeerData = async url => {
 let displayBeer = array => {
     console.log(array);
     content.innerHTML = '';
+    content.style.visibility = 'visible';
     for(let i = 0; i < array.length; i++) {
         const {img, name, tagline} = array[i];
 
@@ -95,6 +95,7 @@ let displayBeer = array => {
     filterNav.style.visibility = 'visible';
     prevBtn.style.visibility = 'visible';
     nextBtn.style.visibility = 'visible';
+
     if(pageNum > 12) {
         nextBtn.style.visibility = 'hidden';
     }
@@ -195,7 +196,22 @@ let moreBeerInfo = (object) => {
 
     pageNav.style.visibility = 'hidden';
     filterNav.style.visibility = 'hidden';
+    nextBtn.style.visibility = 'hidden';
+    prevBtn.style.visibility = 'hidden';
 }
+
+// class Beer {
+//     constructor(name, image_url, description, tagline, first_brewed, abv, ibu, food_pairing) {
+//         this.name = name,
+//         this.img = image_url,
+//         this.description = description,
+//         this.tagline = tagline,
+//         this.brewed = first_brewed,
+//         this.abv = abv,
+//         this.ibu = ibu,
+//         this.foodPairing = food_pairing
+//     }
+// }
 
 function Beer (object) {
     this.name = object.name,
@@ -302,7 +318,6 @@ let setPerPage = num => {
 let sorted5 = () => setPerPage(5);
 let sorted10 = () => setPerPage(10);
 let sorted20 = () => setPerPage(20);
-let sorted25 = () => setPerPage(25);
 
 let searchName = () => {
     let input = searchField.value;
@@ -324,4 +339,3 @@ sortIbu.addEventListener('click', sortedIbu)
 sort5.addEventListener('click', sorted5)
 sort10.addEventListener('click', sorted10)
 sort20.addEventListener('click', sorted20)
-sort25.addEventListener('click', sorted25)
