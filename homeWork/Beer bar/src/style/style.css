@@ -42,7 +42,7 @@ nav {
     gap: 1rem;
     grid-template: auto / repeat(5, 1fr); 
     grid-auto-flow: row;
-    margin-left: 10rem;
+    margin-left: 11.5rem;
 }
 #beers {
     margin-right: 0.5rem;

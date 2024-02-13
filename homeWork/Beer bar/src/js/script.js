@@ -20,6 +20,7 @@ content.style.visibility = 'hidden';
 filterNav.style.visibility = 'hidden';
 pageNav.style.visibility = 'hidden';
 spinner.style.visibility = 'hidden';
+
 let pageNum = null;
 let perPage = 20;
 let filter = null;
@@ -27,14 +28,15 @@ let currentBeers = null;
 let sortSwitch = false;
 
 
-let getBeerData = async url => {
+let getBeerData = url => {
     spinner.style.visibility = 'visible';
-    await fetch(url)
+    fetch(url)
     .then(response => response.json())
     .then(data => {
+        console.log('beer data:');
         console.log(data);
-        displayBeer(createBeer(data));
         currentBeers = data;
+        displayBeer(createBeer(data));
         spinner.style.visibility = 'hidden';
     })
 }
@@ -95,7 +97,10 @@ let displayBeer = array => {
     filterNav.style.visibility = 'visible';
     prevBtn.style.visibility = 'visible';
     nextBtn.style.visibility = 'visible';
-
+    if(array.length < 2) {
+        pageNav.style.visibility = 'hidden';
+        filterNav.style.visibility = 'hidden';
+    }
     if(pageNum > 12) {
         nextBtn.style.visibility = 'hidden';
     }
@@ -117,16 +122,18 @@ let moreBeerInfo = (object) => {
     let cardRow = document.createElement('div');
     cardRow.classList.add('row', 'g-0');
 
-    let imgFrame = document.createElement('div');
-    imgFrame.classList.add('col-md-4', 'dark');
-    imgFrame.style.padding = '3rem'
-
-    let imgShow = document.createElement('img');
-    imgShow.src = img;
-    imgShow.style.maxHeight = '30rem';
-    imgShow.classList.add('img-fluid', 'rounded-start');
-    imgFrame.appendChild(imgShow);
-    cardRow.appendChild(imgFrame);
+    if(img) {
+        let imgFrame = document.createElement('div');
+        imgFrame.classList.add('col-md-4', 'dark');
+        imgFrame.style.padding = '3rem'
+    
+        let imgShow = document.createElement('img');
+        imgShow.src = img;
+        imgShow.style.maxHeight = '30rem';
+        imgShow.classList.add('img-fluid', 'rounded-start');
+        imgFrame.appendChild(imgShow);
+        cardRow.appendChild(imgFrame);
+    }
 
     let cardBodyFrame = document.createElement('div');
     cardBodyFrame.style.padding = '1rem'
@@ -200,50 +207,36 @@ let moreBeerInfo = (object) => {
     prevBtn.style.visibility = 'hidden';
 }
 
-// class Beer {
-//     constructor(name, image_url, description, tagline, first_brewed, abv, ibu, food_pairing) {
-//         this.name = name,
-//         this.img = image_url,
-//         this.description = description,
-//         this.tagline = tagline,
-//         this.brewed = first_brewed,
-//         this.abv = abv,
-//         this.ibu = ibu,
-//         this.foodPairing = food_pairing
-//     }
-// }
-
-function Beer (object) {
-    this.name = object.name,
-    this.img = object.image_url,
-    this.description = object.description,
-    this.tagline = object.tagline,
-    this.brewed = object.first_brewed,
-    this.abv = object.abv,
-    this.ibu = object.ibu,
-    this.foodPairing = object.food_pairing
+class Beer {
+    constructor(name, image_url, description, tagline, first_brewed, abv, ibu, food_pairing) {
+        this.name = name,
+        this.img = image_url,
+        this.description = description,
+        this.tagline = tagline,
+        this.brewed = first_brewed,
+        this.abv = abv,
+        this.ibu = ibu,
+        this.foodPairing = food_pairing
+    }
 }
+
 
 let createBeer = array => {
     let data = [...array];
     let beers = [];
     for(let i = 0; i < data.length; i++) {
-        let beer = new Beer(data[i]);
+        const {name, image_url, description, tagline, first_brewed, abv, ibu, food_pairing} = data[i];
+        let beer = new Beer(name, image_url, description, tagline, first_brewed, abv, ibu, food_pairing);
         beers.push(beer);
     }
     return beers;
 }
 
-
 let getRandomBeer = () => {
     console.clear();
     console.log('Random beer clicked');
-    getBeerData('https://api.punkapi.com/v2/beers/random');
-
-    filterNav.style.visibility = 'hidden';
-    pageNav.style.visibility = 'hidden';
+    getBeerData('https://api.punkapi.com/v2/beers/random')
 }
-
 let getBeers = () => {
     console.clear();
     console.log('Beers clicked');
@@ -251,16 +244,10 @@ let getBeers = () => {
     getBeerData(`https://api.punkapi.com/v2/beers?page=1&per_page=${perPage}`);
 }
 
-let pageFilterBy = filter => {
-
-}
-
-randomBeer.addEventListener('click', getRandomBeer);
-beers.addEventListener('click', getBeers)
 
 let sendNext = () => {
     if(pageNum) {
-        pageNum += 1;
+        ++pageNum ; //+= 1
         console.clear();
         console.log(`Going to page ${pageNum}`);
         getBeerData(`https://api.punkapi.com/v2/beers?page=${pageNum}&per_page=${perPage}`);
@@ -268,23 +255,28 @@ let sendNext = () => {
 }
 let sendPrev = () => {
     if(pageNum > 1) {
-        pageNum -= 1;
+        --pageNum ;//-= 1
         console.clear();
         console.log(`Going to page ${pageNum}`);
         getBeerData(`https://api.punkapi.com/v2/beers?page=${pageNum}&per_page=${perPage}`);
     }
 }
 
-let sortBeerBy = (filter) => {
+let sortBeerBy = filter => {
+    console.clear();
     if(currentBeers) {
         let beersCopy = [...currentBeers];
         if(sortSwitch) {
             let sortedBeers = beersCopy.sort((beer1, beer2) => {
                 if (filter === 'name') {
                     return beer1.name.length - beer2.name.length;
-                } else {
-                    return beer1[filter] - beer2[filter];
+                } else if (filter === 'date') {
+                    let date1 = new Date(beer1.first_brewed.split('/').reverse().join('-'));
+                    let date2 = new Date(beer2.first_brewed.split('/').reverse().join('-'));
+                    return date1 - date2;
                 }
+                    return beer1[filter] - beer2[filter];
+                
             });
             console.log(sortedBeers);
             displayBeer(createBeer(sortedBeers));
@@ -294,22 +286,24 @@ let sortBeerBy = (filter) => {
         let sortedBeers = beersCopy.sort((beer1, beer2) => {
             if (filter === 'name') {
                 return beer2.name.length - beer1.name.length;
-            } else {
-                return beer2[filter] - beer1[filter];
+            } else if (filter === 'date') {
+                let date1 = new Date(beer1.first_brewed.split('/').reverse().join('-'));
+                let date2 = new Date(beer2.first_brewed.split('/').reverse().join('-'));
+                return date2 - date1;
             }
+                return beer2[filter] - beer1[filter];
+            
         });
         console.log(sortedBeers);
         displayBeer(createBeer(sortedBeers));
         sortSwitch = true;
     }
 }
-
 let sortedNames = () => sortBeerBy('name');
 let sortedAlc = () => sortBeerBy('abv');
 let sortedIbu = () => sortBeerBy('ibu');
-let sortedBrewed = () => {
-    
-}
+let sortedBrewed = () => sortBeerBy('date');
+
 
 let setPerPage = num => {
     perPage = num;
@@ -318,6 +312,7 @@ let setPerPage = num => {
 let sorted5 = () => setPerPage(5);
 let sorted10 = () => setPerPage(10);
 let sorted20 = () => setPerPage(20);
+
 
 let searchName = () => {
     let input = searchField.value;
@@ -329,6 +324,8 @@ let searchName = () => {
     alert('No input!');
 }
 
+randomBeer.addEventListener('click', getRandomBeer);
+beers.addEventListener('click', getBeers)
 searchBtn.addEventListener('click', searchName)
 nextBtn.addEventListener('click', sendNext)
 prevBtn.addEventListener('click', sendPrev)
