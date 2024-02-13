@@ -247,7 +247,7 @@ let getBeers = () => {
 
 let sendNext = () => {
     if(pageNum) {
-        ++pageNum ; //+= 1
+        ++pageNum ;
         console.clear();
         console.log(`Going to page ${pageNum}`);
         getBeerData(`https://api.punkapi.com/v2/beers?page=${pageNum}&per_page=${perPage}`);
@@ -255,7 +255,7 @@ let sendNext = () => {
 }
 let sendPrev = () => {
     if(pageNum > 1) {
-        --pageNum ;//-= 1
+        --pageNum ;
         console.clear();
         console.log(`Going to page ${pageNum}`);
         getBeerData(`https://api.punkapi.com/v2/beers?page=${pageNum}&per_page=${perPage}`);
