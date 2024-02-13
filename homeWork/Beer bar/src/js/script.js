@@ -270,7 +270,7 @@ let sortBeerBy = filter => {
             let sortedBeers = beersCopy.sort((beer1, beer2) => {
                 if (filter === 'name') {
                     return beer1.name.length - beer2.name.length;
-                } else if (filter === 'date') {
+                } if (filter === 'date') {
                     let date1 = new Date(beer1.first_brewed.split('/').reverse().join('-'));
                     let date2 = new Date(beer2.first_brewed.split('/').reverse().join('-'));
                     return date1 - date2;
@@ -286,7 +286,7 @@ let sortBeerBy = filter => {
         let sortedBeers = beersCopy.sort((beer1, beer2) => {
             if (filter === 'name') {
                 return beer2.name.length - beer1.name.length;
-            } else if (filter === 'date') {
+            } if (filter === 'date') {
                 let date1 = new Date(beer1.first_brewed.split('/').reverse().join('-'));
                 let date2 = new Date(beer2.first_brewed.split('/').reverse().join('-'));
                 return date2 - date1;
