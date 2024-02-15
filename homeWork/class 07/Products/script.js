@@ -14,19 +14,19 @@ let getProductInfo = input => {
     console.log('All laptops with descending price order');
     console.log(allLaptops);
 
-    let firstItem = object.filter(device => device.id === 1);
-    console.log('First item');
-    console.log(firstItem);
+    let firstGrocery = object.find(p => p.category === 'groceries');
+    console.log('First grocery');
+    console.log(firstGrocery);
 
-    let firstSamsung = object.filter(device => 
+    let firstSamsung = object.find(device => 
         device.brand === 'Samsung' &&
         device.category === 'smartphones');
-    console.log(`Index of the first Samsung:\n${firstSamsung[0].id}`);
+    console.log(`Index of the first Samsung:\n${firstSamsung.id}`);
 
-    let findSony = object.find(item => item.brand === 'Sony');
+    let findSony = object.some(item => item.brand === 'Sony');
     console.log('Looking for the brand: "Sony".');
-    if(findSony === undefined) {
-        console.log('There\'s no device with that brand');
+    if(!findSony) {
+        console.log('There\'s no sony product!');
     }
 
     let findSkinCareProduct = object.filter
@@ -36,21 +36,20 @@ let getProductInfo = input => {
     console.log(findSkinCareProduct[0].title);
 
     let avarageDiscount = object.filter(product => product.rating >= 4.5);
-    console.log(avarageDiscount);
     let avaragePercentage = avarageDiscount.map((item) => item.discountPercentage);
     let avgResult = avaragePercentage.reduce((sum, item) => sum += item, 0);
     console.log(`The average discount percentage of products with a rating above 4.5:\n${avgResult / avaragePercentage.length}`);
 
-    let productHighestPrice = object.sort((item1, item2) => item2.price - item1.price);
+    let productHighestPrice = object.reduce((acc, curr) => acc.price > curr.price ? acc : curr, {});
     console.log(`Find the product with the highest price:`);
-    console.log(productHighestPrice[0]);
+    console.log(productHighestPrice);
 
     let avgIphone = object.filter(phone => phone.category === 'smartphones' && phone.brand === 'Apple');
     let phonesPrice = avgIphone.map(phone => phone.price);
     let avgIphoneResult = phonesPrice.reduce((sum, item) => sum += item, 0);
     console.log(`Average price of all Iphone smartphones:\n${avgIphoneResult / phonesPrice.length}`);
 
-    let productLowestPrice = productHighestPrice[productHighestPrice.length -1];
+    let productLowestPrice = object.reduce((acc, curr) => curr.price > acc.price ? acc : curr, {});
     console.log('The product with the lowest price:');
     console.log(productLowestPrice);
 }
