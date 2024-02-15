@@ -27,14 +27,14 @@ let filter = null;
 let currentBeers = null;
 let sortSwitch = false;
 
-let getBeerData = async (url) => {
+let getBeerData = async url => {
   spinner.style.visibility = "visible";
   const response = await fetch(url).then((r) => r.json());
   spinner.style.visibility = "hidden";
   return response;
 };
 
-let displayBeer = (array) => {
+let displayBeer = array => {
   console.log(array);
   content.innerHTML = "";
   content.style.visibility = "visible";
@@ -109,6 +109,7 @@ let displayBeer = (array) => {
 
 let moreBeerInfo = (object) => {
   content.innerHTML = "";
+  content.style.visibility = "visible";
   const { name, img, description, tagline, brewed, abv, ibu, foodPairing } =
     object;
   console.log("Preparing beer info...");
@@ -187,6 +188,7 @@ let moreBeerInfo = (object) => {
     cardList.appendChild(pair);
   }
 
+
   cardBody.appendChild(cardHeader);
   cardBody.appendChild(cardText);
   cardBody.appendChild(cardBrewed);
@@ -227,30 +229,12 @@ class Beer {
   }
 }
 
-let createBeer = (array) => {
+let createBeer = array => {
   let data = [...array];
   let beers = [];
   for (let i = 0; i < data.length; i++) {
-    const {
-      name,
-      image_url,
-      description,
-      tagline,
-      first_brewed,
-      abv,
-      ibu,
-      food_pairing,
-    } = data[i];
-    let beer = new Beer(
-      name,
-      image_url,
-      description,
-      tagline,
-      first_brewed,
-      abv,
-      ibu,
-      food_pairing
-    );
+    const {name, image_url, description, tagline, first_brewed, abv, ibu, food_pairing} = data[i];
+    let beer = new Beer(name, image_url, description, tagline, first_brewed, abv, ibu, food_pairing);
     beers.push(beer);
   }
   return beers;
@@ -260,10 +244,11 @@ let getRandomBeer = async () => {
   console.clear();
   console.log("Random beer clicked");
   let data = await getBeerData("https://api.punkapi.com/v2/beers/random");
-  currentBeers = data;
   console.log(data);
-  displayBeer(createBeer(data));
-  //   moreBeerInfo(createBeer(data[0]));
+  const {name, image_url, description, tagline, first_brewed, abv, ibu, food_pairing,} = data[0];
+  let beer = new Beer(name,image_url,description,tagline,first_brewed,abv,ibu,food_pairing);
+  console.log(beer); 
+  moreBeerInfo(beer);
 };
 
 let getBeers = async () => {
@@ -300,7 +285,7 @@ let sendPrev = async () => {
   }
 };
 
-let sortBeerBy = (filter) => {
+let sortBeerBy = filter => {
   console.clear();
   if (currentBeers) {
     let beersCopy = [...currentBeers];
@@ -346,7 +331,7 @@ let sortedAlc = () => sortBeerBy("abv");
 let sortedIbu = () => sortBeerBy("ibu");
 let sortedBrewed = () => sortBeerBy("date");
 
-let setPerPage = async (num) => {
+let setPerPage = async num => {
   perPage = num;
   let data = await getBeerData(
     `https://api.punkapi.com/v2/beers?page=${pageNum}&per_page=${perPage}`
