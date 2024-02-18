@@ -19,7 +19,7 @@
     </nav>
 
     <div class="d-flex justify-content-center">
-        <div id="spinner" class="spinner-border" role="status">
+        <div id="spinner" class="spinner-border text-warning" role="status">
         </div>
       </div>
       <div id="pageDisplay"></div>
@@ -34,7 +34,6 @@
               <li><a id="filter20" class="dropdown-item" href="#">show 20</a></li>
             </ul>
           </div>
-          <button class="btn btn-info"><a href="#pageNav" class="link-underline link-underline-opacity-0 link-light">Bottom</a></button>
           <div class="btn-group dropdown">
             <button type="button" class="btn btn-danger dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
               Sort by
@@ -47,10 +46,18 @@
             </ul>
           </div>
       </div>
-    <div id="content" class="content"></div>
+    <div id="content" class="content">
+      <div>
+        <h1>Welcome to the Beer Bar!</h1>
+<h5>Discover your favorite beer by using our convenient <a id="search-text" href="#nameSearchField">search feature</a>. Alternatively, explore our full selection by clicking <a id="search-text">Beers</a> on the top left. Feeling adventurous? Give our Random Beer option a try!<br><br>Enjoy your time here and cheers to great choices!</h5>
+
+        
+        <br><br>
+      <img id="beersImg" src="src/img/beers3.jpg" alt="a wide selection of beers on multiple racks">
+    </div>
+    </div>
     <div id="pageNav">
         <button id="prevBtn" class="btn btn-outline-primary">Prev</button>
-        <button class="btn btn-info topBtn"><a href="#top" class="link-underline link-underline-opacity-0 link-light">Top</a></button>
         <button id="nextBtn" class="btn btn-outline-primary">Next</button>
     </div>
 

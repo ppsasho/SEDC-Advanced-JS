@@ -16,7 +16,6 @@ let sort10 = document.getElementById("filter10");
 let sort20 = document.getElementById("filter20");
 let filterNav = document.getElementsByClassName("filterNav")[0];
 
-content.style.visibility = "hidden";
 filterNav.style.visibility = "hidden";
 pageNav.style.visibility = "hidden";
 spinner.style.visibility = "hidden";
@@ -26,6 +25,7 @@ let perPage = 20;
 let filter = null;
 let currentBeers = null;
 let sortSwitch = false;
+let sortState = null;
 
 let getBeerData = async url => {
   spinner.style.visibility = "visible";
@@ -34,8 +34,38 @@ let getBeerData = async url => {
   return response;
 };
 
+let sortStateSwitch = () => {
+  switch(sortSwitch) {
+    case true:
+      sortSwitch = false;
+      break;
+    case false:
+      sortSwitch = true;
+      break;
+    default:
+      break;
+  }
+  switch(sortState) {
+    case 'name':
+      sortBeerByName();
+      break;
+    case 'abv':
+      sortBeerByAbv();
+      break;
+    case 'ibu':
+      sortBeerByIbu();
+      break;
+    case 'date':
+      sortBeerByDate();
+      break;
+    default:
+      break;
+  }
+}
+
 let displayBeer = array => {
   console.log(array);
+  currentBeers = array;
   content.innerHTML = "";
   content.style.visibility = "visible";
   for (let i = 0; i < array.length; i++) {
@@ -50,7 +80,7 @@ let displayBeer = array => {
       "text-center"
     );
     content.appendChild(cardBox);
-    cardBox.style.width = "18rem";
+    cardBox.style.width = "15rem";
     cardBox.style.padding = "20px";
 
     if (img) {
@@ -201,6 +231,16 @@ let moreBeerInfo = (object) => {
   cardBox.appendChild(cardRow);
   content.appendChild(cardBox);
 
+  if(currentBeers && currentBeers.length > 1) {
+    let backBtn = document.createElement("a");
+    backBtn.classList.add("btn", "btn-danger");
+    backBtn.addEventListener("click", () => {
+      displayBeer(currentBeers);
+    })
+    backBtn.innerText = "Go back";
+    cardBodyFrame.appendChild(backBtn);
+  }
+
   pageNav.style.visibility = "hidden";
   filterNav.style.visibility = "hidden";
   nextBtn.style.visibility = "hidden";
@@ -258,7 +298,6 @@ let getBeers = async () => {
   let data = await getBeerData(
     `https://api.punkapi.com/v2/beers?page=1&per_page=${perPage}`
   );
-  currentBeers = data;
   displayBeer(createBeer(data));
 };
 
@@ -270,7 +309,13 @@ let sendNext = async () => {
     let data = await getBeerData(
       `https://api.punkapi.com/v2/beers?page=${pageNum}&per_page=${perPage}`
     );
-    displayBeer(createBeer(data));
+    currentBeers = createBeer(data);
+    if(sortState) {
+      console.log(`Sorting new beers by: ${sortState}`);
+      sortStateSwitch();
+      return;
+    }
+    displayBeer(currentBeers);
   }
 };
 let sendPrev = async () => {
@@ -281,70 +326,138 @@ let sendPrev = async () => {
     let data = await getBeerData(
       `https://api.punkapi.com/v2/beers?page=${pageNum}&per_page=${perPage}`
     );
-    displayBeer(createBeer(data));
+    currentBeers = createBeer(data);
+    if(sortState) {
+      console.log(`Sorting new beers by: ${sortState}`);
+      sortStateSwitch();
+      return;
+    }
+    displayBeer(currentBeers);
   }
 };
 
-let sortBeerBy = filter => {
-  console.clear();
-  if (currentBeers) {
+
+let sortBeerByName = () => {
+  if(currentBeers) {
+    console.log('Sorting beers by name...');
     let beersCopy = [...currentBeers];
     if (sortSwitch) {
       let sortedBeers = beersCopy.sort((beer1, beer2) => {
-        if (filter === "name") {
-          return beer1.name.length - beer2.name.length;
-        }
-        if (filter === "date") {
-          let date1 = new Date(
-            beer1.first_brewed.split("/").reverse().join("-")
-          );
-          let date2 = new Date(
-            beer2.first_brewed.split("/").reverse().join("-")
-          );
-          return date1 - date2;
-        }
-        return beer1[filter] - beer2[filter];
-      });
-      console.log(sortedBeers);
-      displayBeer(createBeer(sortedBeers));
+        return beer1.name.localeCompare(beer2.name, 'en');
+      })
+      displayBeer(sortedBeers);
       sortSwitch = false;
+      sortState = 'name';
+      return;
+    }
+    let sortedBeers = beersCopy.sort((beer1, beer2) => { 
+      return beer2.name.localeCompare(beer1.name, 'en');
+    })
+    displayBeer(sortedBeers);
+    sortSwitch = true;
+    sortState = 'name'; 
+  }
+}
+
+let sortBeerByAbv = () => {
+  if(currentBeers) {
+    console.log('Sorting beers by abv...');
+    let beersCopy = [...currentBeers];
+    if (sortSwitch) {
+      let sortedBeers = beersCopy.sort((beer1, beer2) => {
+        return beer1.abv - beer2.abv;
+      })
+      displayBeer(sortedBeers);
+      sortSwitch = false;
+      sortState = 'abv';
+      return;
+    }
+    let sortedBeers = beersCopy.sort((beer1, beer2) => { 
+      return beer2.abv - beer1.abv;
+    })
+    displayBeer(sortedBeers);
+    sortSwitch = true;
+    sortState = 'abv'; 
+  }
+}
+
+let sortBeerByIbu = () => {
+  if(currentBeers) {
+    console.log('Sorting beers by ibu...');
+    let beersCopy = [...currentBeers];
+    if (sortSwitch) {
+      let sortedBeers = beersCopy.sort((beer1, beer2) => {
+        return beer1.ibu - beer2.ibu;
+      })
+      displayBeer(sortedBeers);
+      sortSwitch = false;
+      sortState = 'ibu';
+      return;
+    }
+    let sortedBeers = beersCopy.sort((beer1, beer2) => { 
+      return beer2.ibu - beer1.ibu;
+    })
+    displayBeer(sortedBeers);
+    sortSwitch = true;
+    sortState = 'ibu';
+  }
+}
+
+let sortBeerByDate = () => {
+  if(currentBeers) {
+    console.log('Sorting beers by date...');
+    let beersCopy = [...currentBeers];
+    if (sortSwitch) {
+      let sortedBeers = beersCopy.sort((beer1, beer2) => {
+        let date1 = new Date(
+          beer1.brewed.split("/").reverse().join("-")
+        );
+        let date2 = new Date(
+          beer2.brewed.split("/").reverse().join("-")
+        );
+        return date1 - date2;
+      })
+      displayBeer(sortedBeers);
+      sortSwitch = false;
+      sortState = 'date';
       return;
     }
     let sortedBeers = beersCopy.sort((beer1, beer2) => {
-      if (filter === "name") {
-        return beer2.name.length - beer1.name.length;
-      }
-      if (filter === "date") {
-        let date1 = new Date(beer1.first_brewed.split("/").reverse().join("-"));
-        let date2 = new Date(beer2.first_brewed.split("/").reverse().join("-"));
-        return date2 - date1;
-      }
-      return beer2[filter] - beer1[filter];
-    });
-    console.log(sortedBeers);
-    displayBeer(createBeer(sortedBeers));
+      let date1 = new Date(beer1.brewed.split("/").reverse().join("-"));
+      let date2 = new Date(beer2.brewed.split("/").reverse().join("-"));
+      return date2 - date1;
+    })
+    displayBeer(sortedBeers);
     sortSwitch = true;
+    sortState = 'date';
   }
-};
-let sortedNames = () => sortBeerBy("name");
-let sortedAlc = () => sortBeerBy("abv");
-let sortedIbu = () => sortBeerBy("ibu");
-let sortedBrewed = () => sortBeerBy("date");
+}
+
+let sortedNames = () => sortBeerByName();
+let sortedAlc = () => sortBeerByAbv();
+let sortedIbu = () => sortBeerByIbu();
+let sortedBrewed = () => sortBeerByDate();
+
 
 let setPerPage = async num => {
   perPage = num;
   let data = await getBeerData(
     `https://api.punkapi.com/v2/beers?page=${pageNum}&per_page=${perPage}`
   );
-  currentBeers = data;
-  displayBeer(createBeer(data));
+  currentBeers = createBeer(data);
+  if(sortState) {
+    sortStateSwitch();
+    return;
+  }
+  displayBeer(currentBeers);
 };
 let sorted5 = () => setPerPage(5);
 let sorted10 = () => setPerPage(10);
 let sorted20 = () => setPerPage(20);
 
 let searchName = async () => {
-  let input = searchField.value;
+  let input = searchField.value.trim();
+  console.log(input);
   if (input) {
     let data = await getBeerData(
       `https://api.punkapi.com/v2/beers?beer_name=${input}&per_page=${perPage}`
