@@ -375,10 +375,11 @@ let sortTable = (input, attr) => {
 };
 
 let searchAllPeople = (request, array)=> {
+  let copyArray = [...array];
   if (searchField.value) {
     let personArray = [];
     console.log(`The requested name is: ${request}`);
-    let foundPerson = array.filter(person => person.name === `${request}`);
+    let foundPerson = copyArray.filter(person => person.name === `${request}`);
     console.log('The requested person was found!');
     console.log(foundPerson);
     let newPerson = new Person(foundPerson[0]);
