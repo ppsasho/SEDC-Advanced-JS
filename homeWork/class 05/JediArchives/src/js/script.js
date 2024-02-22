@@ -25,7 +25,18 @@ let currentObject = null;
 let currentRender = null;
 let sortSwitch = null;
 
-function getDataFromApi(url, key) {
+ let checkCurrentRender = () => {
+  switch(currentRender) {
+    case 'person':
+      return renderPerson(createPerson(currentObject));
+    case 'starship':
+      return renderStarShip(createStarShip(currentObject));
+    case 'planets':
+      return renderPlanet(createPlanet(currentObject));
+  }
+ }
+
+let getDataFromApi = (url, key) => {
   spinner.style.visibility = "visible";
   fetch(url)
     .then((response) => response.json())
@@ -36,39 +47,20 @@ function getDataFromApi(url, key) {
 
       switch (key) {
         case "person":
-          renderPerson(createPerson(currentObject));
           currentRender = "person";
-          break;
+          return renderPerson(createPerson(currentObject));
 
         case "starship":
-          renderStarShip(createStarShip(currentObject));
           currentRender = "starship";
-          break;
+          return renderStarShip(createStarShip(currentObject));
 
         case "planets":
-          renderPlanet(createPlanet(currentObject));
           currentRender = "planets";
-          break;
+          return renderPlanet(createPlanet(currentObject));
 
         case "next":
-          if (currentRender === "person") {
-            renderPerson(createPerson(currentObject));
-          } else if (currentRender === "starship") {
-            renderStarShip(createStarShip(currentObject));
-          } else if (currentRender === "planets") {
-            renderPlanet(createPlanet(currentObject));
-          }
-          break;
-
         case "prev":
-          if (currentRender === "person") {
-            renderPerson(createPerson(currentObject));
-          } else if (currentRender === "starship") {
-            renderStarShip(createStarShip(currentObject));
-          } else if (currentRender === "planets") {
-            renderPlanet(createPlanet(currentObject));
-          }
-          break;
+          return checkCurrentRender();
 
         default:
           console.log("Invalid key");
@@ -90,15 +82,7 @@ function getDataFromApi(url, key) {
   console.log(allPeople);
 })();
 
-let renderPerson = (array) => {
-  getPageNumber();
-  table.innerHTML = "";
-  nextBtn.style.visibility = "hidden";
-  prevBtn.style.visibility = "hidden";
-
-  let attributes = ["Name", "Height", "Mass", "Gender", "Birth_Year", "Films"];
-
-  let tableRow = table.insertRow(0);
+let drawFirstRow = (attributes, tableRow) => {
   for (let i = 0; i < attributes.length; i++) {
     let attrCell = tableRow.insertCell(i);
     attrCell.innerText = attributes[i];
@@ -107,19 +91,27 @@ let renderPerson = (array) => {
       sortTable(array, attrCell.innerText.toLowerCase());
     });
   }
+}
 
+let drawOtherRows = (array) => {
   for (let i = 0; i < array.length; i++) {
     let tableRow = table.insertRow(i + 1);
     let object = array[i];
-    let keys = Object.keys(object);
+    let values = Object.values(object);
 
-    for (let b = 0; b < keys.length; b++) {
-      let key = keys[b];
-      let value = object[key];
+    for (let b = 0; b < values.length; b++) {
       let tableCells = tableRow.insertCell(b);
-      tableCells.innerText += `${value}`;
+      tableCells.innerText += `${values[b]}`;
     }
   }
+}
+
+let hideNextPrevAndClean = () => {
+  table.innerHTML = "";
+  nextBtn.style.visibility = "hidden";
+  prevBtn.style.visibility = "hidden";
+}
+let checkNextPrev = () => {
   if (currentObject.previous) {
     prevBtn.style.visibility = "visible";
   }
@@ -128,13 +120,24 @@ let renderPerson = (array) => {
   }
   page.style.visibility = "visible";
   search.style.visibility = 'visible';
+}
+
+let renderPerson = (array) => {
+  getPageNumber();
+  hideNextPrevAndClean();
+
+  let attributes = ["Name", "Height", "Mass", "Gender", "Birth_Year", "Films"];
+
+  let tableRow = table.insertRow(0);
+  drawFirstRow(attributes, tableRow);
+  drawOtherRows(array);
+
+  checkNextPrev();
 };
 
 let renderStarShip = (array) => {
   getPageNumber();
-  table.innerHTML = "";
-  nextBtn.style.visibility = "hidden";
-  prevBtn.style.visibility = "hidden";
+  hideNextPrevAndClean();
 
   let attributes = [
     "Name",
@@ -145,42 +148,15 @@ let renderStarShip = (array) => {
     "Class",
   ];
   let tableRow = table.insertRow(0);
-  for (let i = 0; i < attributes.length; i++) {
-    let attrCell = tableRow.insertCell(i);
-    attrCell.innerText = attributes[i];
-    attrCell.id = `header${i}`;
-    attrCell.addEventListener("click", () => {
-      sortTable(array, attrCell.innerText.toLowerCase());
-    });
-  }
+  drawFirstRow(attributes, tableRow);
+  drawOtherRows(array);
 
-  for (let i = 0; i < array.length; i++) {
-    let tableRow = table.insertRow(i + 1);
-    let object = array[i];
-    let keys = Object.keys(object);
-
-    for (let b = 0; b < keys.length; b++) {
-      let key = keys[b];
-      let value = object[key];
-      let tableCells = tableRow.insertCell(b);
-      tableCells.innerText += `${value}`;
-    }
-  }
-  if (currentObject.previous) {
-    prevBtn.style.visibility = "visible";
-  }
-  if (currentObject.next) {
-    nextBtn.style.visibility = "visible";
-  }
-  page.style.visibility = "visible";
-  search.style.visibility = 'hidden';
+  checkNextPrev();
 };
 
 let renderPlanet = (array) => {
   getPageNumber();
-  table.innerHTML = "";
-  nextBtn.style.visibility = "hidden";
-  prevBtn.style.visibility = "hidden";
+  hideNextPrevAndClean();
 
   let attributes = [
     "Name",
@@ -192,64 +168,43 @@ let renderPlanet = (array) => {
   ];
 
   let tableRow = table.insertRow(0);
-  for (let i = 0; i < attributes.length; i++) {
-    let attrCell = tableRow.insertCell(i);
-    attrCell.innerText = attributes[i];
-    attrCell.id = `header${i}`;
-    attrCell.addEventListener("click", () => {
-      sortTable(array, attrCell.innerText.toLowerCase());
-    });
-  }
+  drawFirstRow(attributes, tableRow);
+  drawOtherRows(array);
 
-  for (let i = 0; i < array.length; i++) {
-    let tableRow = table.insertRow(i + 1);
-    let object = array[i];
-    let keys = Object.keys(object);
-
-    for (let b = 0; b < keys.length; b++) {
-      let key = keys[b];
-      let value = object[key];
-      let tableCells = tableRow.insertCell(b);
-      tableCells.innerText += `${value}`;
-    }
-  }
-  if (currentObject.previous) {
-    prevBtn.style.visibility = "visible";
-  }
-  if (currentObject.next) {
-    nextBtn.style.visibility = "visible";
-  }
-  page.style.visibility = "visible";
-  search.style.visibility = 'hidden';
+  checkNextPrev();
 };
 
-
-
-function Person(object) {
-  (this.name = object.name),
-    (this.height = object.height),
-    (this.mass = object.mass),
-    (this.gender = object.gender),
-    (this.birthYear = object.birth_year),
-    (this.appearances = object.films.length);
+class Person {
+  constructor({name, height, mass, gender, birth_year, films} = object) {
+    this.name = name,
+    this.height = height,
+    this.mass = mass,
+    this.gender = gender,
+    this. birthYear = birth_year,
+    this.appearances = films.length
+  }
 }
 
-function StarShip(object) {
-  (this.name = object.name),
-    (this.model = object.model),
-    (this.manufacturer = object.manufacturer),
-    (this.cost = object.cost_in_credits),
-    (this.capacity = object.passengers),
-    (this.class = object.starship_class);
+class StarShip {
+  constructor({name, model, manufacturer, cost_in_credits, passengers, starship_class} = object) {
+    this.name = name,
+    this.model = model,
+    this.manufacturer = manufacturer,
+    this.cost = cost_in_credits,
+    this.capacity = passengers,
+    this.class = starship_class
+  }
 }
 
-function Planet(object) {
-  (this.name = object.name),
-    (this.climate = object.climate),
-    (this.diameter = object.diameter),
-    (this.population = object.population),
-    (this.gravity = object.gravity),
-    (this.terrain = object.terrain);
+class Planet {
+  constructor({name, climate, diameter, population, gravity, terrain} = object) {
+    this.name = name,
+    this. climate = climate,
+    this.diameter = diameter,
+    this.population = population,
+    this.gravity = gravity,
+    this.terrain = terrain
+  }
 }
 
 
@@ -320,44 +275,18 @@ let previousPage = () => {
 };
 
 let getPageNumber = () => {
-  if (currentObject.next === null) {
+  if (!currentObject.next) {
     previousPage();
     return;
   }
-  if (currentObject.previous === null) {
+  if (!currentObject.previous) {
     nextPage();
     return;
   }
   nextPage();
 };
 
-
-let sortTable = (input, attr) => {
-  let array = [...input];
-  console.clear();
-  console.log(`Attribute clicked: ${attr}`);
-  console.log(`Sorted array:`);
-  console.log(array);
-
-  if (sortSwitch) {
-    array.sort((attr1, attr2) => attr2.name.length - attr1.name.length);
-    switch (currentRender) {
-      case "person":
-        renderPerson(array);
-        break;
-
-      case "starship":
-        renderStarShip(array);
-        break;
-
-      case "planets":
-        renderPlanet(array);
-        break;
-    }
-    sortSwitch = false;
-    return;
-  }
-  array.sort((attr1, attr2) => attr1.name.length - attr2.name.length);
+let sortRender = array => {
   switch (currentRender) {
     case "person":
       renderPerson(array);
@@ -371,6 +300,23 @@ let sortTable = (input, attr) => {
       renderPlanet(array);
       break;
   }
+}
+
+let sortTable = (input, attr) => {
+  let array = [...input];
+  console.clear();
+  console.log(`Attribute clicked: ${attr}`);
+  console.log(`Sorted array:`);
+  console.log(array);
+
+  if (sortSwitch) {
+    array.sort((attr1, attr2) => attr2.name.length - attr1.name.length);
+    sortRender(array);
+    sortSwitch = false;
+    return;
+  }
+  array.sort((attr1, attr2) => attr1.name.length - attr2.name.length);
+  sortRender(array);
   sortSwitch = true;
 };
 
@@ -380,13 +326,15 @@ let searchAllPeople = (request, array)=> {
     let personArray = [];
     console.log(`The requested name is: ${request}`);
     let foundPerson = copyArray.filter(person => person.name === `${request}`);
-    console.log('The requested person was found!');
-    console.log(foundPerson);
-    let newPerson = new Person(foundPerson[0]);
-    personArray.push(newPerson);
-    console.log(`Extracted the required info from ${request}`);
-    renderPerson(personArray);
-    return;
+    if(foundPerson) {
+      console.log('The requested person was found!');
+      console.log(foundPerson);
+      let newPerson = new Person(foundPerson[0]);
+      personArray.push(newPerson);
+      console.log(`Extracted the required info from ${request}`);
+      renderPerson(personArray);
+      return;
+    }
   }
   alert('Nothing to search!');
 }
@@ -400,11 +348,8 @@ let sendSearchRequest = () => {
 
 
 searchBtn.addEventListener('click', sendSearchRequest)
-
 personBtn.addEventListener("click", sendPersonRequest);
-
 starShipBtn.addEventListener("click", sendStarShipRequest);
-
 moonBtn.addEventListener("click", sendPlanetsRequest);
 
 nextBtn.addEventListener("click", () => {
