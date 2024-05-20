@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "brewdog-js": "^3.0.1",
+    "punkapi-db": "^2.6.0",
+    "punkapi-lib": "^2.5.0"
+  }
+}

@@ -15,6 +15,8 @@ let sort5 = document.getElementById("filter5");
 let sort10 = document.getElementById("filter10");
 let sort20 = document.getElementById("filter20");
 let filterNav = document.getElementsByClassName("filterNav")[0];
+const punkApi = require("../punkapi/node_modules/punkapi-db");
+const punkLib = require("../punkapi/node_modules/punkapi-lib");
 
 filterNav.style.visibility = "hidden";
 pageNav.style.visibility = "hidden";
@@ -300,7 +302,7 @@ let createBeer = (array) => {
 let getRandomBeer = async () => {
   console.clear();
   console.log("Random beer clicked");
-  let data = await getBeerData("https://api.punkapi.com/v2/beers/random");
+  let data = punkLib.random();
   console.log(data);
   const {
     name,
