@@ -325,7 +325,7 @@ let searchAllPeople = (request, array)=> {
   if (searchField.value) {
     let personArray = [];
     console.log(`The requested name is: ${request}`);
-    let foundPerson = copyArray.filter(person => person.name === `${request}`);
+    let foundPerson = copyArray.filter(person => person.name.toLowerCase() === `${request.toLowerCase()}`);
     if(foundPerson) {
       console.log('The requested person was found!');
       console.log(foundPerson);
